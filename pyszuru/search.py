@@ -4,6 +4,8 @@ import warnings
 from collections import namedtuple
 
 from tqdm import tqdm
+from rich.progress import Progress
+import contextlib
 
 from .api import API, FileToken
 from .resource import Resource
@@ -12,18 +14,6 @@ from .post import Post
 
 
 SearchResult = namedtuple("SearchResult", ["post", "distance", "exact"])
-
-
-# https://stackoverflow.com/a/45187287/13027787
-class _NullContextManager(object):
-    def __init__(self, dummy_resource=None):
-        self.dummy_resource = dummy_resource
-
-    def __enter__(self):
-        return self.dummy_resource
-
-    def __exit__(self, *args):
-        pass
 
 
 def _search_generic(
@@ -35,7 +25,10 @@ def _search_generic(
 ) -> Generator[Resource, None, None]:
     offset = 0
     total = None
-    with (tqdm() if show_progress_bar else _NullContextManager()) as pbar:
+    with (Progress() if show_progress_bar else contextlib.nullcontext()) as pbar:
+        if show_progress_bar:
+            ptask = pbar.add_task('', start=False)
+
         while True:
             page = api._call(
                 "GET",
@@ -46,11 +39,10 @@ def _search_generic(
             if page["total"] != total:
                 total = page["total"]
                 if show_progress_bar:
-                    pbar.total = total
-                    pbar.refresh()
+                    pbar.start_task(ptask)
             for item in page["results"]:
                 if show_progress_bar:
-                    pbar.update()
+                    pbar.update(ptask, advance=100/total)
                 yield transforming_class(api, item)
             if offset >= total:
                 break
