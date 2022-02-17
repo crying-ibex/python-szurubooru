@@ -40,7 +40,7 @@ class Tag(Resource):
     @classmethod
     def from_id(cls, api: API, id_: str):  # -> Tag
         warnings.warn(
-            "Tag.from_id() is deprecated, use API.getTag() instead", DeprecationWarning
+            "Tag.from_id() is deprecated, use API.get_tag() instead", DeprecationWarning
         )
         t = cls(api, {"names": [id_]})
         t.pull()
@@ -49,7 +49,7 @@ class Tag(Resource):
     @classmethod
     def new(cls, api: API, name: str):  # -> Tag
         warnings.warn(
-            "Tag.new() is deprecated, use API.createTag() instead", DeprecationWarning
+            "Tag.new() is deprecated, use API.create_tag() instead", DeprecationWarning
         )
         # Get default tag category
         tag_cats = [

@@ -82,7 +82,7 @@ class Post(Resource):
     @classmethod
     def from_id(cls, api: API, id_: int):  # -> Post
         warnings.warn(
-            "Post.from_id() is deprecated, use API.getPost() instead", DeprecationWarning
+            "Post.from_id() is deprecated, use API.get_post() instead", DeprecationWarning
         )
         p = cls(api, {"id": id_})
         p.pull()
@@ -91,7 +91,7 @@ class Post(Resource):
     @classmethod
     def new(cls, api: API, content: FileToken, safety: str):  # -> Post
         warnings.warn(
-            "Post.new() is deprecated, use API.createPost() instead", DeprecationWarning
+            "Post.new() is deprecated, use API.create_post() instead", DeprecationWarning
         )
         cls._validate_safety(safety)
         p = cls(api, {})

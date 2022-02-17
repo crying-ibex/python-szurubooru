@@ -8,12 +8,12 @@ from .search import search_tag, search_post, search_by_image, _search_generic, S
 
 
 class API(_API):
-    def getPost(self, id_: int) -> Post:
+    def get_post(self, id_: int) -> Post:
         p = Post(self, {"id": id_})
         p.pull()
         return p
 
-    def createPost(self, content: FileToken, safety: str) -> Post:
+    def create_post(self, content: FileToken, safety: str) -> Post:
         Post._validate_safety(safety)
         p = Post(self, {})
         p._json_new = {
@@ -24,12 +24,12 @@ class API(_API):
         p.push()
         return p
 
-    def getTag(self, id_: str) -> Tag:
+    def get_tag(self, id_: str) -> Tag:
         t = Tag(self, {"names": [id_]})
         t.pull()
         return t
 
-    def createTag(self, name: str) -> Tag:
+    def create_tag(self, name: str) -> Tag:
         # Get default tag category
         tag_cats = [
             x["name"]
